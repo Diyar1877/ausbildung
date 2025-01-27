@@ -11,6 +11,7 @@ import SubjectPosts from './pages/SubjectPosts';
 import Post from './pages/Post';
 import Search from './pages/Search';
 import Favorites from './pages/Favorites';
+import Subjects from './pages/Subjects';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="/subject/:subject/post/:id" element={<Post />} />
             <Route path="/search" element={<Search />} />
             <Route path="/favorites" element={<Favorites />} />
+            <Route path="/subjects" element={<Subjects />} />
           </Routes>
         </main>
         <Footer />
