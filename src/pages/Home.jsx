@@ -1,21 +1,22 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import FavoriteButton from '../components/FavoriteButton';
 
 const Home = () => {
   const recentPosts = [
     {
+      id: 1,
       subject: 'Englisch',
       title: 'Present Perfect',
       date: '27.01.2025',
       content: 'Heute habe ich das Present Perfect gelernt. Es wird verwendet, wenn eine Handlung in der Vergangenheit begonnen hat und bis zur Gegenwart andauert.',
-      id: 1
     },
     {
+      id: 2,
       subject: 'Anwendungsentwicklung',
       title: 'React Components',
       date: '26.01.2025',
       content: 'Heute habe ich gelernt, wie man React Components erstellt und verwendet.',
-      id: 2
     }
   ];
 
@@ -32,7 +33,7 @@ const Home = () => {
 
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Neueste Posts</h2>
-        <div className="grid gap-6">
+        <div className="space-y-6">
           {recentPosts.map((post) => (
             <Link 
               key={post.id}
@@ -48,12 +49,12 @@ const Home = () => {
                     </span>
                     <h3 className="text-xl font-semibold mt-1">{post.title}</h3>
                   </div>
+                  <FavoriteButton postId={post.id} subject={post.subject} />
+                </div>
+                <p className="text-gray-700 mb-2">{post.content}</p>
+                <div className="text-right">
                   <span className="text-sm text-gray-500">{post.date}</span>
                 </div>
-                <p className="text-gray-700">{post.content}</p>
-                <span className="inline-block mt-4 text-blue-600">
-                  Weiterlesen →
-                </span>
               </div>
             </Link>
           ))}

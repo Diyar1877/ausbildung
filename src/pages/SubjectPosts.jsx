@@ -1,5 +1,6 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import FavoriteButton from '../components/FavoriteButton';
 
 const SubjectPosts = () => {
   const { subject } = useParams();
@@ -44,8 +45,11 @@ const SubjectPosts = () => {
           >
             <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
               <div className="flex justify-between items-start mb-4">
-                <h2 className="text-xl font-semibold">{post.title}</h2>
-                <span className="text-sm text-gray-500">{post.date}</span>
+                <div>
+                  <h2 className="text-xl font-semibold">{post.title}</h2>
+                  <span className="text-sm text-gray-500">{post.date}</span>
+                </div>
+                <FavoriteButton postId={post.id} subject={subject} />
               </div>
               <p className="text-gray-700 mb-4">{post.content}</p>
               <span className="text-blue-600">

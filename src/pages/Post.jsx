@@ -1,5 +1,7 @@
 import React from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
+import FavoriteButton from '../components/FavoriteButton';
+import PdfExportButton from '../components/PdfExportButton';
 
 const Post = () => {
   const { subject, id } = useParams();
@@ -82,22 +84,33 @@ Nächste Schritte:
 
   return (
     <div className="container mx-auto px-4 py-8 mb-32">
-      <div className="max-w-3xl mx-auto">
-        <div className="mb-6">
-          <Link 
-            to={fromHomepage ? "/" : `/subject/${post.subject}`}
-            className="text-sm font-medium text-blue-600 hover:text-blue-800"
-          >
-            ← {fromHomepage ? "Zurück zur Startseite" : `Zurück zu ${post.subject}`}
-          </Link>
-        </div>
-        
-        <article className="bg-white rounded-lg shadow-md p-8">
-          <header className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{post.title}</h1>
-            <div className="text-sm text-gray-500">{post.date}</div>
-          </header>
-          
+      <div className="mb-8">
+        <Link 
+          to={fromHomepage ? "/" : `/subject/${post.subject}`}
+          className="text-blue-600 hover:text-blue-800 flex items-center"
+        >
+          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Zurück
+        </Link>
+      </div>
+
+      <article className="bg-white rounded-lg shadow-md p-8">
+        <div className="post-content">
+          <div className="flex justify-between items-start mb-6">
+            <div>
+              <span className="text-sm font-medium text-blue-600">
+                {post.subject}
+              </span>
+              <h1 className="text-3xl font-bold mt-2">{post.title}</h1>
+              <span className="text-sm text-gray-500 mt-2 block">{post.date}</span>
+            </div>
+            <div className="flex space-x-4">
+              <PdfExportButton post={post} />
+              <FavoriteButton postId={parseInt(id)} subject={subject} />
+            </div>
+          </div>
           <div className="prose max-w-none">
             {post.content.split('\n\n').map((paragraph, index) => (
               <p key={index} className="mb-4 whitespace-pre-line">
@@ -105,8 +118,8 @@ Nächste Schritte:
               </p>
             ))}
           </div>
-        </article>
-      </div>
+        </div>
+      </article>
     </div>
   );
 };

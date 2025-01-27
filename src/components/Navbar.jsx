@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import SearchBar from './SearchBar';
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -27,18 +28,21 @@ const Navbar = () => {
             <Link to="/" className="text-gray-600 hover:text-gray-900">
               Home
             </Link>
-            <Link to="/tutorials" className="text-gray-600 hover:text-gray-900">
-              Tutorials
-            </Link>
             <Link to="/projects" className="text-gray-600 hover:text-gray-900">
               Projekte
             </Link>
             <Link to="/about" className="text-gray-600 hover:text-gray-900">
               Über mich
             </Link>
+            <Link to="/favorites" className="text-gray-600 hover:text-gray-900">
+              Favoriten
+            </Link>
           </div>
           
-          <div className="absolute right-8">
+          <div className="absolute right-8 flex items-center space-x-4">
+            <div className="w-64">
+              <SearchBar />
+            </div>
             <button 
               className="text-gray-600 hover:text-gray-900"
               onClick={() => setIsMenuOpen(!isMenuOpen)}

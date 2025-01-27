@@ -9,6 +9,8 @@ import About from './pages/About';
 import PostDetail from './pages/PostDetail';
 import SubjectPosts from './pages/SubjectPosts';
 import Post from './pages/Post';
+import Search from './pages/Search';
+import Favorites from './pages/Favorites';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
             <Route path="/post/:id" element={<PostDetail />} />
             <Route path="/subject/:subject" element={<SubjectPosts />} />
             <Route path="/subject/:subject/post/:id" element={<Post />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/favorites" element={<Favorites />} />
           </Routes>
         </main>
         <Footer />
