@@ -1,24 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import FavoriteButton from '../components/FavoriteButton';
+import * as api from '../services/api';
 
-const Home = () => {
-  const recentPosts = [
-    {
-      id: 1,
-      subject: 'Englisch',
-      title: 'Present Perfect',
-      date: '27.01.2025',
-      content: 'Heute habe ich das Present Perfect gelernt. Es wird verwendet, wenn eine Handlung in der Vergangenheit begonnen hat und bis zur Gegenwart andauert.',
-    },
-    {
-      id: 2,
-      subject: 'Anwendungsentwicklung',
-      title: 'React Components',
-      date: '26.01.2025',
-      content: 'Heute habe ich gelernt, wie man React Components erstellt und verwendet.',
+export default function Home() {
+  const [latestPosts, setLatestPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    loadPosts();
+  }, []);
+
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const subjects = await api.getSubjects();
+      
+      // Sammle alle Posts aus allen Fächern
+      const allPosts = subjects.flatMap(subject => 
+        subject.posts.map(post => ({
+          ...post,
+          subjectName: subject.name
+        }))
+      );
+
+      // Sortiere nach Datum, neueste zuerst
+      const sortedPosts = allPosts.sort((a, b) => 
+        new Date(b.date) - new Date(a.date)
+      );
+
+      setLatestPosts(sortedPosts);
+    } catch (err) {
+      setError('Fehler beim Laden der Posts');
+      console.error('Error loading posts:', err);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
+
+  if (loading) {
+    return <div>Lade Posts...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 mb-32">
@@ -34,10 +60,10 @@ const Home = () => {
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-gray-900 mb-6">Neueste Posts</h2>
         <div className="space-y-6">
-          {recentPosts.map((post) => (
+          {latestPosts.map((post) => (
             <Link 
               key={post.id}
-              to={`/subject/${post.subject}/post/${post.id}`}
+              to={`/subject/${post.subjectName}/post/${post.id}`}
               state={{ from: 'homepage' }}
               className="block"
             >
@@ -45,11 +71,10 @@ const Home = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-sm font-medium text-blue-600">
-                      {post.subject}
+                      {post.subjectName}
                     </span>
                     <h3 className="text-xl font-semibold mt-1">{post.title}</h3>
                   </div>
-                  <FavoriteButton postId={post.id} subject={post.subject} />
                 </div>
                 <p className="text-gray-700 mb-2">{post.content}</p>
                 <div className="text-right">
@@ -62,6 +87,4 @@ const Home = () => {
       </section>
     </div>
   );
-};
-
-export default Home;
+}

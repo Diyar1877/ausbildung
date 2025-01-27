@@ -1,9 +1,17 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const isActive = (path) => location.pathname === path;
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <>
@@ -34,6 +42,39 @@ const Navbar = () => {
                 Suche
               </Link>
             </div>
+
+            <div className="absolute right-8 flex items-center space-x-4">
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <div className="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center">
+                    <span className="text-white font-medium">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    Abmelden
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    Anmelden
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                  >
+                    Registrieren
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
@@ -41,10 +82,61 @@ const Navbar = () => {
       {/* Mobile Navigation */}
       <nav className="bg-white shadow-lg md:hidden">
         <div className="container mx-auto px-4">
-          <div className="flex justify-center items-center h-16">
-            <Link to="/" className="text-xl font-bold text-gray-800">
+          <div className="flex flex-col items-center py-4">
+            <Link to="/" className="text-xl font-bold text-gray-800 mb-4">
               Ausbildung With DIDO
             </Link>
+            
+            <div className="flex flex-col space-y-2 items-center mb-4">
+              <Link to="/" className={`${isActive('/') ? 'bg-gray-900 text-white' : 'text-gray-600'} px-3 py-2 rounded-md`}>
+                Home
+              </Link>
+              <Link to="/projects" className={`${isActive('/projects') ? 'bg-gray-900 text-white' : 'text-gray-600'} px-3 py-2 rounded-md`}>
+                Projekte
+              </Link>
+              <Link to="/favorites" className={`${isActive('/favorites') ? 'bg-gray-900 text-white' : 'text-gray-600'} px-3 py-2 rounded-md`}>
+                Favoriten
+              </Link>
+              <Link to="/subjects" className={`${isActive('/subjects') ? 'bg-gray-900 text-white' : 'text-gray-600'} px-3 py-2 rounded-md`}>
+                Fächer
+              </Link>
+              <Link to="/search" className={`${isActive('/search') ? 'bg-gray-900 text-white' : 'text-gray-600'} px-3 py-2 rounded-md`}>
+                Suche
+              </Link>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  <div className="h-8 w-8 rounded-full bg-gray-600 flex items-center justify-center">
+                    <span className="text-white font-medium">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    Abmelden
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    Anmelden
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                  >
+                    Registrieren
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>
