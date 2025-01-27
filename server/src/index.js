@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import sequelize from './config/database.js';
 import authRoutes from './routes/authRoutes.js';
+import subjectRoutes from './routes/subjectRoutes.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 
 // Routen
 app.use('/api/auth', authRoutes);
+app.use('/subjects', subjectRoutes);
 
 // Datenbank-Synchronisation und Server-Start
 const PORT = process.env.PORT || 5000;

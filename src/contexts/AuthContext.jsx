@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const AuthContext = createContext();
+export const AuthContext = createContext();
 
 export function useAuth() {
   return useContext(AuthContext);
@@ -8,6 +8,29 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Beim Start der App, prüfe ob ein User und Token im localStorage sind
+    const storedUser = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
+      // Prüfe ob der Token ein Admin- oder User-Token ist
+      const isAdminToken = token.startsWith('admin-mock-token-');
+      const userData = JSON.parse(storedUser);
+      
+      // Stelle sicher, dass der Token-Typ mit dem User-Typ übereinstimmt
+      if ((isAdminToken && userData.isAdmin) || (!isAdminToken && !userData.isAdmin)) {
+        setUser(userData);
+      } else {
+        // Bei Unstimmigkeit, lösche die Daten
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+      }
+    }
+    setLoading(false);
+  }, []);
 
   const login = async (email, password) => {
     try {
@@ -18,8 +41,12 @@ export function AuthProvider({ children }) {
           email: email,
           isAdmin: true
         };
+        // Generiere einen Mock-Token für den Admin
+        const token = 'admin-mock-token-' + Date.now();
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(adminUser));
         setUser(adminUser);
-        console.log('Logged in as admin:', adminUser); // Debug-Log
+        console.log('Logged in as admin:', adminUser);
         return true;
       } else {
         const regularUser = {
@@ -27,8 +54,12 @@ export function AuthProvider({ children }) {
           email: email,
           isAdmin: false
         };
+        // Generiere einen Mock-Token für reguläre Benutzer
+        const token = 'user-mock-token-' + Date.now();
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(regularUser));
         setUser(regularUser);
-        console.log('Logged in as regular user:', regularUser); // Debug-Log
+        console.log('Logged in as regular user:', regularUser);
         return true;
       }
     } catch (error) {
@@ -44,8 +75,12 @@ export function AuthProvider({ children }) {
         email: email,
         isAdmin: false
       };
+      // Generiere einen Mock-Token für neue Benutzer
+      const token = 'user-mock-token-' + Date.now();
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(newUser));
       setUser(newUser);
-      console.log('Registered new user:', newUser); // Debug-Log
+      console.log('Registered new user:', newUser);
       return true;
     } catch (error) {
       console.error('Registration error:', error);
@@ -55,21 +90,22 @@ export function AuthProvider({ children }) {
 
   const logout = () => {
     setUser(null);
-    console.log('User logged out'); // Debug-Log
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    console.log('User logged out');
   };
-
-  console.log('Current user state:', user); // Debug-Log
 
   const value = {
     user,
     login,
     register,
-    logout
+    logout,
+    loading
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   );
 }

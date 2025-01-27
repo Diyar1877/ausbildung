@@ -16,13 +16,15 @@ export default function Home() {
       setLoading(true);
       const subjects = await api.getSubjects();
       
-      // Sammle alle Posts aus allen Fächern
-      const allPosts = subjects.flatMap(subject => 
-        subject.posts.map(post => ({
+      // Sammle alle Posts aus allen Fächern, mit Null-Check
+      const allPosts = subjects.flatMap(subject => {
+        if (!subject.posts) return [];
+        return subject.posts.map(post => ({
           ...post,
-          subjectName: subject.name
-        }))
-      );
+          subjectTitle: subject.title,
+          subjectId: subject.id // Speichere die subject ID
+        }));
+      });
 
       // Sortiere nach Datum, neueste zuerst
       const sortedPosts = allPosts.sort((a, b) => 
@@ -63,26 +65,32 @@ export default function Home() {
           {latestPosts.map((post) => (
             <Link 
               key={post.id}
-              to={`/subject/${post.subjectName}/post/${post.id}`}
-              state={{ from: 'homepage' }}
+              to={`/subjects/${post.subjectId}/posts/${post.id}`}
               className="block"
             >
               <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-sm font-medium text-blue-600">
-                      {post.subjectName}
+                      {post.subjectTitle}
                     </span>
                     <h3 className="text-xl font-semibold mt-1">{post.title}</h3>
                   </div>
                 </div>
-                <p className="text-gray-700 mb-2">{post.content}</p>
+                <p className="text-gray-700 mb-2 line-clamp-3">{post.content}</p>
                 <div className="text-right">
-                  <span className="text-sm text-gray-500">{post.date}</span>
+                  <span className="text-sm text-gray-500">
+                    {new Date(post.date).toLocaleString()}
+                  </span>
                 </div>
               </div>
             </Link>
           ))}
+          {latestPosts.length === 0 && (
+            <div className="text-center text-gray-500 py-8">
+              Noch keine Posts vorhanden
+            </div>
+          )}
         </div>
       </section>
     </div>
