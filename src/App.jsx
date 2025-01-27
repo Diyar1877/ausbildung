@@ -7,6 +7,8 @@ import Tutorials from './pages/Tutorials';
 import Projects from './pages/Projects';
 import About from './pages/About';
 import PostDetail from './pages/PostDetail';
+import SubjectPosts from './pages/SubjectPosts';
+import Post from './pages/Post';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
             <Route path="/projects" element={<Projects />} />
             <Route path="/about" element={<About />} />
             <Route path="/post/:id" element={<PostDetail />} />
+            <Route path="/subject/:subject" element={<SubjectPosts />} />
+            <Route path="/subject/:subject/post/:id" element={<Post />} />
           </Routes>
         </main>
         <Footer />
